@@ -4,9 +4,6 @@ export const searchForKeyword = (searchedInput: string, parsedData: Array<string
   let keywordIndexPosition = 0;
   let lowerCaseRow:string = "";
 
-  // This needs to be extracted to be it's own thing. This is search for index.
-  
-
   for (const row of parsedData) {
       lowerCaseRow = row.toLowerCase();
       keywordIndexPosition = lowerCaseRow.search(searchedInput);

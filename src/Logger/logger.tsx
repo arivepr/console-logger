@@ -6,6 +6,7 @@ import {LoggerContextProvider} from './LoggerContext';
 // import LoggerFooter from './loggerFooter';
 import memoize from 'memoize-one';
 import { LOGGER_ROW_HEIGHT, LOGGER_HEIGHT, LOGGER_WIDTH } from './utils/constants';
+import { isArrayOfString } from './utils/utils';
 import './styles/base.scss';
 import './styles/logger.styles.scss';
 import './styles/styles.css';
@@ -33,7 +34,7 @@ const createLoggerDataItem = memoize((
 
 interface LoggerProps extends React.Props<HTMLElement> {
   /* String that wil be processed into the logger for output */
-  data: string;
+  data: string | Array<string>;
   /* Indication of how we're going to process data */
   typeOfData?: string; // How do we manage this?
   /* This is for developers to just use a straight logger output */
@@ -44,11 +45,12 @@ interface LoggerProps extends React.Props<HTMLElement> {
   parseData?: boolean;
   /* Custom styling for loggers */
   className?: string;
+  /* Titles users can provide for their Data Sources */
+  dataSourceTitles?: Array<string | null | undefined>; 
   /* This describes custom items devs can add to the integrated search/toolbar */
   customToolbarActions?: () => React.ReactNode | React.ReactNode[]; 
   /* Dev defined method for downloading the output data from logger */
   onDownloading?: () => void;
-  /*  */
 };
 
 const Logger: React.FC<LoggerProps> = memo(({ 
@@ -57,12 +59,16 @@ const Logger: React.FC<LoggerProps> = memo(({
   hasSearchbar = true,  
   parseData = true,
   customToolbarActions,
+  dataSourceTitles,
 }) => {
-    const [ parsedData, setParsedData ] = useState<Array<String> | null>([]);
+    const [ parsedData, setParsedData ] = useState<Array<string> | null>([]);
     const [ searchedInput, setSearchedInput ] = useState<string | null>('');
     const [ searchedWordIndexes, setSearchedWordIndexes ] = useState<Array<number> | null>([]);
     const [ highlightedRowIndexes, setHighlightedRowIndexes ] = useState<Array<number> | null>([]);
     const [ rowInFocus, setRowInFocus ] = useState<number | null | undefined>();
+    const [ currentDataSource, setCurrentDataSource ] = useState<number | null | undefined>(0); 
+    const [ dataSourcesAmount, setDataSourcesAmount ] = useState<number | null | undefined>(1);
+    const [ dataSourcesTitles, setDataSourcesTitles ] = useState<Array<string | undefined | null>>(['Default']);
 
     const DEFAULT_SEARCH_INDEX = 0;
     const loggerRef = React.createRef<any>();
@@ -85,12 +91,30 @@ const Logger: React.FC<LoggerProps> = memo(({
         return true;
     };
 
+    /* Parsing depending on whether the data given is a string or a full array of strings */
     useEffect( () => { 
-      setParsedData(parseConsoleOutput(data)); 
-      console.log('Seeing our new parsed data: ', parsedData);
+      if( typeof data === "string") {
+        console.log('We have a SINGULAR string!');
+        setParsedData(parseConsoleOutput(data));
+      }
+
+      else if( isArrayOfString(data)){
+        // console.log('We have an array of strings!');
+        // console.log('Heres a look at the whole object: ', data);
+        // console.log('Heres a look at how were parsing: ', data[currentDataSource]);
+        setDataSourcesAmount(data.length);
+        setParsedData(parseConsoleOutput(data[currentDataSource]));
+      }
+
     }, []);
 
-    // Necessitates receiving String as a data
+    /* This might be causing unnecessary re-renders, do we need this here? */
+    useEffect(() => {
+      console.log('WARNING: changing data source over to: ', currentDataSource);
+      setParsedData(parseConsoleOutput(data[currentDataSource]));
+    }, [currentDataSource]);
+
+  /* Necessitates receiving String as a data */
   const parseConsoleOutput = (data) => {
       const stringToSplitWith = '\n';
       const cleanString = data.split(stringToSplitWith);
@@ -160,6 +184,11 @@ const Logger: React.FC<LoggerProps> = memo(({
                 setSearchedInput={ setSearchedInput }
                 searchForKeyword={ searchForKeyword }
                 customToolbarActions={customToolbarActions}
+                currentDataSource={currentDataSource}
+                setCurrentDataSource={setCurrentDataSource}
+                dataSourcesAmount={dataSourcesAmount}
+                dataSourceTitles={dataSourcesTitles}
+                setDataSourceTitles={setDataSourcesTitles}
             />
             <List
                 className='logger__grid'
@@ -173,11 +202,6 @@ const Logger: React.FC<LoggerProps> = memo(({
             >
                 { LoggerRow }
             </List>
-            { /* <LoggerFooter
-                highlightedRowIndexes={ highlightedRowIndexes }
-                scrollToRow={ scrollToRow }
-                setRowInFocus={ setRowInFocus }
-            /> */ }
           </LoggerContextProvider>
         </div>
       </>

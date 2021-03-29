@@ -40,10 +40,6 @@ const LoggerRow: React.FC<LoggerRowProps> = memo(({ index, style, data }) => {
       highlightIndex === -1 ? setIsHiglighted(false) : setIsHiglighted(true);
     }, []);
 
-    // useEffect(() => {
-    //   console.log('This is my data AFTER parsing and into the loggerRow: ', parsedData);
-    // }, [parsedData]);
-
     const getData = (index) => {
         return parsedData[ index ]; // Can use this function to later add wrapping for syntax highlighting (basic)
     };

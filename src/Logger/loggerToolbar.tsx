@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLoggerContext } from './LoggerContext';
 import { 
   Level, 
@@ -11,13 +11,18 @@ export interface LoggerToolbarProps extends React.HTMLProps<HTMLDivElement> {
   searchedWordIndexes: Array<number>;
   rowInFocus: number;
   searchedInput: string;
+  dataSourcesAmount: number;
+  currentDataSource: number;
+  dataSourceTitles?: Array<string | null | undefined>;
   customToolbarActions?: () => React.ReactNode | React.ReactNode[];
   setSearchedInput: (inputString: string) => void;
   setSearchedWordIndexes: (searchedWordIndexes:Array<number>) => undefined | void;
   searchForKeyword: (keyword:string) => void;
   setRowInFocus: (prevState: undefined | number | undefined) => undefined | void;
   scrollToRow: (searchedRow: number) => void;
-};
+  setCurrentDataSource: (dataSource: number) => void;
+  setDataSourceTitles: (dataTitles: Array<string | null>) => void;
+ };
 
 const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
     searchedWordIndexes,
@@ -28,7 +33,12 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
     setSearchedInput,
     customToolbarActions,
     searchedInput,
-    searchForKeyword
+    searchForKeyword,
+    dataSourcesAmount,
+    currentDataSource,
+    setCurrentDataSource,
+    dataSourceTitles,
+    setDataSourceTitles
 }) => {
     const [ userInput, setUserInput ]  = useState('');
     const [ foundWordIndex, setFoundWordIndex ] = useState<number | undefined>(-1);
@@ -93,6 +103,11 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
                 handleNextSearchItem={handleNextSearchItem} 
                 handlePrevSearchItem={handlePrevSearchItem}
                 handleClear={handleClear} 
+                currentDataSource={currentDataSource}
+                setCurrentDataSource={setCurrentDataSource}
+                dataSourcesAmount={dataSourcesAmount}
+                dataSourceTitles={dataSourceTitles}
+                setDataSourceTitles={setDataSourceTitles}
               /> 
             </LevelItem>
         </Level>

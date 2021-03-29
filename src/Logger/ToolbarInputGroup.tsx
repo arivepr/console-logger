@@ -1,41 +1,60 @@
-import React, { useState, useRef, useEffect, useReducer } from 'react';
-import { InputGroup, Button, TextInput, Toolbar, ToolbarItem, ToolbarContent } from '@patternfly/react-core';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { Button, TextInput, SearchInput, Toolbar, ToolbarItem, ToolbarContent, InputGroup } from '@patternfly/react-core';
 import { SearchIcon, DownloadIcon, ExpandIcon, ExternalLinkAltIcon, PlayIcon, ExportIcon } from '@patternfly/react-icons';
-import {  } from '@patternfly/react-core';
-// import { LoggerReducer } from './loggerContext';
 import { LoggerToolbarProps } from './loggerToolbar';
+import ToolbarDropdown from './toolbarDropdown';
+import classnames from 'classnames';
+import { LoggerContextInterface, useLoggerContext } from './LoggerContext';
 import "./styles/loggerToolbar.styles.scss";
 
 interface ToolbarInputGroup extends LoggerToolbarProps {
-  customToolbarActions?: () => React.ReactNode | React.ReactNode[]; 
+  dataSources?: Array<string>
   includesFullScreen?: boolean;
   includesPlay?: boolean;
   includesLaunchExternal?: boolean;
   includesDownload?: boolean;
   includesCustomActions?: boolean;
-  handleClear: () => void;
+  multipleDataSources?: boolean;
+  dataSourcesAmount: number;
+  dataSourceTitles?: Array<string | null | undefined>;
+  customToolbarActions?: () => React.ReactNode | React.ReactNode[]; 
   handleNextSearchItem: () => void;
   handlePrevSearchItem: () => void;
+  handleClear: () => void;
+  setDataSourceTitles: (dataTitles:Array<string | null>) => void;
 }
 
 const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
   includesFullScreen = true,
-  includesPlay = true,
+  includesPlay = false,
   includesLaunchExternal = true,
-  includesDownload = true,
+  includesDownload = false,
   includesCustomActions = true,
   customToolbarActions = null,
+  dataSourcesAmount,
+  currentDataSource = 0,
+  setCurrentDataSource,
+  dataSourceTitles,
+  setDataSourceTitles
 }) => {
+  const dropdownItems = [];
   const [value, setValue] = useState('search');
+  const loggerContext = useLoggerContext();
   const ref = useRef(null);
+  console.log('Checking out loggerContext: ', loggerContext);
 
-  useEffect(() => {
-
-  }, [value]); 
-
-  return (
+   return (
     <div>
       <InputGroup >
+        <InputGroup className="toolbar__defautl-selector">
+          <ToolbarDropdown 
+            currentDataSource={currentDataSource}
+            setCurrentDataSource={setCurrentDataSource}
+            dataSourceTitles={dataSourceTitles}
+            dataSourcesAmount={dataSourcesAmount} 
+            setDataSourceTitles={setDataSourceTitles} 
+          />
+        </InputGroup>
         <InputGroup className="toolbar__default-actions">
           { includesPlay && (
               <Button variant="control" className="searchbar__btn">
@@ -73,23 +92,43 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
             ref={ref}
             className="toolbar__searchbar"
           />
-          {/* <SearchInput
-            placeholder='Search'
-            value={value}
-            onChange={input => setValue(input)}
-            onClear={() => console.log('bye')}
-            resultsCount={`${0} / ${0}`}
-            onNextClick={() => console.log('bye')}
-            onPreviousClick={() => console.log('bye')}
-            className="toolbar__searchbar"
-          /> */}
           <Button variant="control" className="searchbar__btn">
             <SearchIcon />
           </Button>
         </InputGroup>  
       </InputGroup>
     </div>
-  )
+  );
+
+  // This way the user can use their own custom toolbar items if they want to? via props
+  // const toolbarItems = () => {
+  //   return(
+  //     <>
+  //       <ToolbarItem spacer={{default: "spacerMd"}}>
+  //           <ToolbarDropdown 
+  //             currentDataSource={currentDataSource}
+  //             setCurrentDataSource={setCurrentDataSource}
+  //             dataSourcesAmount={dataSourcesAmount}  
+  //           />
+  //       </ToolbarItem>
+  //       <ToolbarItem spacer={{default: "spacerLg"}}>
+  //         <InputGroup>
+  //           <SearchInput value={value} onChange={setValue} onClear={() => setValue('')}/>
+  //         </InputGroup>
+  //       </ToolbarItem>
+  //     </>
+  //   );
+  // };
+
+  // return (
+  //   <>
+  //     <Toolbar>
+  //       <ToolbarContent>
+  //         {toolbarItems()}
+  //       </ToolbarContent>        
+  //     </Toolbar>
+  //   </>
+  // );
 }
 
 export default ToolbarInputGroup;

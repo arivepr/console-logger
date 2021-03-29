@@ -10,3 +10,4 @@ export const LOGGER_DATA_COLUMN_WIDTH = 1052;
 export const LOGGER_STAMP_COLUMN_WIDTH = 85;
 export const LOGGER_ROW_HEIGHT = 30;
 export const LOGGER_LINE_NUMBER_INDEX_DELTA = 1;
+export const NUMBER_INDEX_DELTA = 1;

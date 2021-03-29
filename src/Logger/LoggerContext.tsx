@@ -15,6 +15,8 @@ export interface LoggerContextInterface { // Need to figure out how exactly to s
   rowInFocus: (number | null | undefined | React.Dispatch<React.SetStateAction<number>>)[];
   searchedWordIndexes: (Array<number> | React.Dispatch<React.SetStateAction<number[]>>)[];
   highlightedRowIndexes: (Array<number> | React.Dispatch<React.SetStateAction<number[]>>)[];
+  currentDataSource?: number | null | undefined;
+  setCurrentDataSource?: (index: number) => void;
 };
 
 const LoggerContext = createContext<LoggerContextInterface | null>(null);
@@ -24,6 +26,7 @@ export const LoggerContextProvider = ({ children }) => {
   const [ rowInFocus, setRowInFocus ] = useState<number | null>(null);
   const [ searchedWordIndexes, setSearchedWordIndexes ] = useState<Array<number> | null>([])
   const [ highlightedRowIndexes, setHighlightedRowIndexes ] = useState<Array<number> | null>([]);
+  const [ currentDataSource, setCurrentDataSource ] = useState<number | null | undefined>(); 
 
   const store = {
     searchInput: [searchInput, setSearchInput],

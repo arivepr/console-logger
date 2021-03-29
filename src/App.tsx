@@ -27,9 +27,11 @@ function App() {
   return (
     <div className="root-div">
       {/* <Logger data={data.data} onFullscreen={} onExternalOpen={} /> */}
-      <Logger data={bigData.data} customToolbarActions={customToolbarActions} />
+      <Logger data={[bigData.data, longLine.data]} />
       &nbsp;
-      <Logger data={longLine.data} />
+      {/* <Logger data={bigData.data} customToolbarActions={customToolbarActions} />
+      &nbsp;
+      <Logger data={longLine.data} /> */}
     </div>
 
   );
