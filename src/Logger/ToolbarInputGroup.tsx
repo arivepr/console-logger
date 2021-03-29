@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button, TextInput, SearchInput, Toolbar, ToolbarItem, ToolbarContent, InputGroup } from '@patternfly/react-core';
 import { SearchIcon, DownloadIcon, ExpandIcon, ExternalLinkAltIcon, PlayIcon, ExportIcon } from '@patternfly/react-icons';
 import { LoggerToolbarProps } from './loggerToolbar';
 import ToolbarDropdown from './toolbarDropdown';
 import classnames from 'classnames';
-import { LoggerContextInterface, useLoggerContext } from './LoggerContext';
+import { useLoggerContext } from './LoggerContext';
 import "./styles/loggerToolbar.styles.scss";
 
 interface ToolbarInputGroup extends LoggerToolbarProps {
@@ -34,14 +34,23 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
   dataSourcesAmount,
   currentDataSource = 0,
   setCurrentDataSource,
-  dataSourceTitles,
-  setDataSourceTitles
 }) => {
+  const loggerContext = useLoggerContext();
+  const {
+    rowInFocus, 
+    setRowInFocus,
+    dataSourceTitles,
+    setDataSourceTitles
+  } = loggerContext;
   const dropdownItems = [];
   const [value, setValue] = useState('search');
-  const loggerContext = useLoggerContext();
+  
   const ref = useRef(null);
-  console.log('Checking out loggerContext: ', loggerContext);
+
+  const onSearch = (index:number) => {
+    console.log('Checking in on my current inFocus: ', rowInFocus);
+    setRowInFocus(index);
+  }
 
    return (
     <div>
@@ -92,7 +101,7 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
             ref={ref}
             className="toolbar__searchbar"
           />
-          <Button variant="control" className="searchbar__btn">
+          <Button variant="control" className="searchbar__btn" onClick={() => onSearch(1)}>
             <SearchIcon />
           </Button>
         </InputGroup>  

@@ -14,7 +14,6 @@ interface ToolbarDropdownInterface extends React.HTMLProps<HTMLDivElement> {
   setCurrentDataSource: (index: number) => void,
 }
 
-// contents should be entirely though props, not hardcoded. User can reuse this for whatever they may need. Move specific things to utils?
 const ToolbarDropdown: React.FC<ToolbarDropdownInterface> = ({
   dataSourcesAmount = 1,
   currentDataSource = 0,
@@ -26,14 +25,7 @@ const ToolbarDropdown: React.FC<ToolbarDropdownInterface> = ({
 
   // Hacky solution to have here, but it gives the desired output for now. 
   useEffect(() => {
-    console.log("ECHALEEEE, aqui tenemos los sources: ", dataSourcesAmount);
-
-    if(dataSourcesAmount <= 1){
-      console.log('Gotta hide this mate');
-      // should switch using classnames rather than this.
-    }
     if(dataSourcesAmount > 1 && dataSourceTitles[currentDataSource] === "Default" ){
-      console.log('Creating new default titles for: ', dataSourcesAmount);
       let titleCounter:number = 0;
       let newTitles:Array<string | null| undefined> = [];
       while (titleCounter < dataSourcesAmount){
@@ -41,9 +33,7 @@ const ToolbarDropdown: React.FC<ToolbarDropdownInterface> = ({
         ++titleCounter;
       }
 
-      console.log('RESULTING TITLE ARRAY: ', newTitles);
       setDataSourceTitles(newTitles);
-      console.log('RESULTING dataSourceTitles: ', dataSourceTitles);
     }
   }, [dataSourcesAmount]);
 
@@ -56,13 +46,11 @@ const ToolbarDropdown: React.FC<ToolbarDropdownInterface> = ({
   }
 
   const onDropDownItemAction = (index: number) => {
-    console.log('This is the index of the data source Im switching to: ', index);
     setCurrentDataSource(index);
   };
 
   const dropdownItems = dataSourceTitles.map((title, index) => (<DropdownItem key={index} component="button" onClick={() => onDropDownItemAction(index)}>{title}</DropdownItem>));
 
-  // This follows the example posted over on the PF docs for PF Dropdown
   return (
     <>
       <Dropdown onSelect={()=> onSelect()} id="toggle-id" style={{height: "40px"}}

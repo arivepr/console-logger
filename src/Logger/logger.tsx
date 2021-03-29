@@ -3,9 +3,8 @@ import { VariableSizeList as List, areEqual } from 'react-window';
 import LoggerRow from './loggerRow';
 import LoggerToolbar from './loggerToolbar';
 import {LoggerContextProvider} from './LoggerContext';
-// import LoggerFooter from './loggerFooter';
 import memoize from 'memoize-one';
-import { LOGGER_ROW_HEIGHT, LOGGER_HEIGHT, LOGGER_WIDTH } from './utils/constants';
+import { LOGGER_ROW_HEIGHT, LOGGER_HEIGHT, LOGGER_WIDTH } from './utils/constants'; // Anyway to calculate this dynamically with jsx? Figure it out.
 import { isArrayOfString } from './utils/utils';
 import './styles/base.scss';
 import './styles/logger.styles.scss';
@@ -35,8 +34,6 @@ const createLoggerDataItem = memoize((
 interface LoggerProps extends React.Props<HTMLElement> {
   /* String that wil be processed into the logger for output */
   data: string | Array<string>;
-  /* Indication of how we're going to process data */
-  typeOfData?: string; // How do we manage this?
   /* This is for developers to just use a straight logger output */
   hasSearchbar?: boolean;
   /* This is for devs who want their own functionality attached to the logger*/
@@ -91,7 +88,10 @@ const Logger: React.FC<LoggerProps> = memo(({
         return true;
     };
 
-    /* Parsing depending on whether the data given is a string or a full array of strings */
+    /* 
+      Parsing depending on whether the data given is a string or a full array of strings 
+      Should also take care of verifying the type of data we're taking in the first place. Figure it out. 
+    */
     useEffect( () => { 
       if( typeof data === "string") {
         console.log('We have a SINGULAR string!');
@@ -99,9 +99,6 @@ const Logger: React.FC<LoggerProps> = memo(({
       }
 
       else if( isArrayOfString(data)){
-        // console.log('We have an array of strings!');
-        // console.log('Heres a look at the whole object: ', data);
-        // console.log('Heres a look at how were parsing: ', data[currentDataSource]);
         setDataSourcesAmount(data.length);
         setParsedData(parseConsoleOutput(data[currentDataSource]));
       }
@@ -113,6 +110,10 @@ const Logger: React.FC<LoggerProps> = memo(({
       console.log('WARNING: changing data source over to: ', currentDataSource);
       setParsedData(parseConsoleOutput(data[currentDataSource]));
     }, [currentDataSource]);
+
+    useEffect(() => {
+      console.log('Testing out changes in my rowInFocus from Logger: ', rowInFocus);
+    }, [rowInFocus]);
 
   /* Necessitates receiving String as a data */
   const parseConsoleOutput = (data) => {
@@ -128,7 +129,10 @@ const Logger: React.FC<LoggerProps> = memo(({
       return cleanString;
   };
 
-    /* Will also be separated into its own example section, rather than being part of core functionality */
+    /* 
+      Extract this out of the parent component, and figure out a way to decouple of it from the component. It should take an array, and return an array of indexes
+      where the searchedInput is found throughout the data array. Should always be searching an array of strings. Look into lazy log for ideas.
+    */
     const searchForKeyword = () => { 
         const searchResults = [];
         let rowIndexCounter = 0;
@@ -177,24 +181,24 @@ const Logger: React.FC<LoggerProps> = memo(({
             <LoggerToolbar
                 rowInFocus={ rowInFocus }
                 setRowInFocus={ setRowInFocus }
-                scrollToRow={ scrollToRow }
+                scrollToRow={ scrollToRow } // Add to context
                 searchedWordIndexes={ searchedWordIndexes }
                 setSearchedWordIndexes={ setSearchedWordIndexes }
                 searchedInput={ searchedInput }
                 setSearchedInput={ setSearchedInput }
-                searchForKeyword={ searchForKeyword }
-                customToolbarActions={customToolbarActions}
+                searchForKeyword={ searchForKeyword } // Figure out a way to decouple this from parent component
+                customToolbarActions={customToolbarActions} // Need to encapsulate whatever come through with components customized for the logger (logger specific buttons/dropdown/kebabs)
                 currentDataSource={currentDataSource}
                 setCurrentDataSource={setCurrentDataSource}
-                dataSourcesAmount={dataSourcesAmount}
-                dataSourceTitles={dataSourcesTitles}
+                dataSourcesAmount={dataSourcesAmount} // can keep moving this as a prop, immutable variable 
+                dataSourceTitles={dataSourcesTitles} // optional prop, should be optional on context as well. 
                 setDataSourceTitles={setDataSourcesTitles}
             />
             <List
                 className='logger__grid'
                 rowHeight={ index => setRowHeight(index) }
                 height={ LOGGER_HEIGHT }
-                width={"100%"}
+                width={"100%"} // Figure out what exactly this translates to
                 itemSize={ () => 30 }
                 itemCount={ `${ parsedData.length }` }
                 itemData={ dataToRender }

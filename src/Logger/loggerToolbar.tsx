@@ -46,7 +46,6 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
     const value = userInput;
     const DEFAULT_FOCUS = -1;
     const DEFAULT_INDEX = 1;
-    console.log('Looking at my context object: ', loggerState);
 
     useEffect(() => {
       if (userInput.length === 0) {
