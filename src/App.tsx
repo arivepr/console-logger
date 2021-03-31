@@ -1,9 +1,10 @@
 import React from 'react';
-import Logger from './Logger/logger';
+import Logger from './Logger/LoggerRoot';
 // import data from './Logger/data/testData';
 import { data }from './Logger/data/realTestData';
 import { bigData, longLine } from './Logger/data/bigTestData';
 import { Button } from '@patternfly/react-core';
+import LoggerIndex from './Logger/LoggerRoot';
 import "@patternfly/react-core/dist/styles/base.css";
 import './App.css';
 
@@ -29,9 +30,8 @@ function App() {
       {/* <Logger data={data.data} onFullscreen={} onExternalOpen={} /> */}
       <Logger data={[bigData.data, longLine.data]} />
       &nbsp;
-      {/* <Logger data={bigData.data} customToolbarActions={customToolbarActions} />
+      <LoggerIndex data={[bigData.data, longLine.data]} />
       &nbsp;
-      <Logger data={longLine.data} /> */}
     </div>
 
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Dropdown, DropdownToggle, DropdownItem, DropdownPosition } from '@patternfly/react-core';
-import { useLoggerContext } from './LoggerContext';
+import { useLoggerContext } from './LoggerRoot/LoggerContext';
 import { NUMBER_INDEX_DELTA } from './utils/constants';
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import classnames from 'classnames';

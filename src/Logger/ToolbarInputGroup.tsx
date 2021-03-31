@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button, TextInput, SearchInput, Toolbar, ToolbarItem, ToolbarContent, InputGroup } from '@patternfly/react-core';
 import { SearchIcon, DownloadIcon, ExpandIcon, ExternalLinkAltIcon, PlayIcon, ExportIcon } from '@patternfly/react-icons';
-import { LoggerToolbarProps } from './loggerToolbar';
+import { LoggerToolbarProps } from './Toolbar/loggerToolbar';
 import ToolbarDropdown from './toolbarDropdown';
 import classnames from 'classnames';
-import { useLoggerContext } from './LoggerContext';
+import { useLoggerContext } from './LoggerRoot/LoggerContext';
 import "./styles/loggerToolbar.styles.scss";
 
 interface ToolbarInputGroup extends LoggerToolbarProps {

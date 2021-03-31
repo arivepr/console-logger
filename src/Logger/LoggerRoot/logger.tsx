@@ -1,14 +1,14 @@
-import React, { useEffect, useState, memo, useContext, useReducer}  from 'react';
+import React, { useEffect, useState, memo }  from 'react';
 import { VariableSizeList as List, areEqual } from 'react-window';
-import LoggerRow from './loggerRow';
-import LoggerToolbar from './loggerToolbar';
+import LoggerRow from '../Logger Row/loggerRow';
+import LoggerToolbar from '../Toolbar/loggerToolbar';
 import {LoggerContextProvider} from './LoggerContext';
 import memoize from 'memoize-one';
-import { LOGGER_ROW_HEIGHT, LOGGER_HEIGHT, LOGGER_WIDTH } from './utils/constants'; // Anyway to calculate this dynamically with jsx? Figure it out.
-import { isArrayOfString } from './utils/utils';
-import './styles/base.scss';
-import './styles/logger.styles.scss';
-import './styles/styles.css';
+import { LOGGER_ROW_HEIGHT, LOGGER_HEIGHT, LOGGER_WIDTH } from '../utils/constants'; // Anyway to calculate this dynamically with jsx? Figure it out.
+import { isArrayOfString } from '../utils/utils';
+import '../styles/base.scss';
+import '../styles/logger.styles.scss';
+import '../styles/styles.css';
 
 // Wrapping multiple variables around memoization to rerender loggerRow only when these change, and to send both through a single obj.
 const createLoggerDataItem = memoize((

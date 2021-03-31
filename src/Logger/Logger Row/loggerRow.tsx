@@ -1,7 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
-import { LOGGER_LINE_NUMBER_INDEX_DELTA } from './utils/constants';
+import { LOGGER_LINE_NUMBER_INDEX_DELTA } from '../utils/constants';
 import classNames from 'classnames';
-import './styles/loggerRow.styles.scss';
+import '../styles/loggerRow.styles.scss';
 
 interface LoggerRowProps extends React.Props<HTMLElement> {
   index: number;
@@ -15,7 +15,7 @@ interface LoggerRowProps extends React.Props<HTMLElement> {
 };
 
 const LoggerRow: React.FC<LoggerRowProps> = memo(({ index, style, data }) => {
-    const { parsedData, rowInFocus, highlightedRowIndexes, setHighlightedRowIndexes } = data; // setRowInFocus was part of the params
+    const { parsedData, rowInFocus, highlightedRowIndexes, setHighlightedRowIndexes } = data; // Getting this from my context now, need to replace this part 
     const [ clickCounter, setClickCounter ] = useState(0);
     const [ isHiglighted, setIsHiglighted ] = useState(false);
 

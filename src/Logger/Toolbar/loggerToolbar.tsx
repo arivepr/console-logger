@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useLoggerContext } from './LoggerContext';
+import { useLoggerContext } from '../LoggerRoot/LoggerContext';
 import { 
   Level, 
   LevelItem, 
 } from '@patternfly/react-core';
-import ToolbarInputGroup from './ToolbarInputGroup';
-import './styles/loggerToolbar.styles.scss';
+import ToolbarInputGroup from '../ToolbarInputGroup';
+import '../styles/loggerToolbar.styles.scss';
 
 export interface LoggerToolbarProps extends React.HTMLProps<HTMLDivElement> {
   searchedWordIndexes: Array<number>;
