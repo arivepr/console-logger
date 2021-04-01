@@ -2,7 +2,7 @@ import React, { useEffect, useState, memo }  from 'react';
 import { VariableSizeList as List, areEqual } from 'react-window';
 import LoggerRow from '../Logger Row/loggerRow';
 import LoggerToolbar from '../Toolbar/loggerToolbar';
-import {LoggerContextProvider} from './LoggerContext';
+import { useLoggerContext } from './LoggerContext';
 import memoize from 'memoize-one';
 import { LOGGER_ROW_HEIGHT, LOGGER_HEIGHT, LOGGER_WIDTH } from '../utils/constants'; // Anyway to calculate this dynamically with jsx? Figure it out.
 import { isArrayOfString } from '../utils/utils';
@@ -13,22 +13,16 @@ import '../styles/styles.css';
 // Wrapping multiple variables around memoization to rerender loggerRow only when these change, and to send both through a single obj.
 const createLoggerDataItem = memoize((
     parsedData,
-    searchedInput,
     loggerRef,
     rowInFocus,
-    setRowInFocus,
     highlightedRowIndexes,
     setHighlightedRowIndexes,
-    searchedWordIndexes
 ) => ({
     parsedData,
-    searchedInput,
     loggerRef,
     rowInFocus,
-    setRowInFocus,
     highlightedRowIndexes,
     setHighlightedRowIndexes,
-    searchedWordIndexes
 }));
 
 interface LoggerProps extends React.Props<HTMLElement> {
@@ -59,26 +53,27 @@ const Logger: React.FC<LoggerProps> = memo(({
   dataSourceTitles,
 }) => {
     const [ parsedData, setParsedData ] = useState<Array<string> | null>([]);
-    const [ searchedInput, setSearchedInput ] = useState<string | null>('');
-    const [ searchedWordIndexes, setSearchedWordIndexes ] = useState<Array<number> | null>([]);
-    const [ highlightedRowIndexes, setHighlightedRowIndexes ] = useState<Array<number> | null>([]);
-    const [ rowInFocus, setRowInFocus ] = useState<number | null | undefined>();
-    const [ currentDataSource, setCurrentDataSource ] = useState<number | null | undefined>(0); 
-    const [ dataSourcesAmount, setDataSourcesAmount ] = useState<number | null | undefined>(1);
-    const [ dataSourcesTitles, setDataSourcesTitles ] = useState<Array<string | undefined | null>>(['Default']);
-
+    const [ dataSourcesAmount, setDataSourcesAmount ] = useState<number>(1);
+    const loggerContext = useLoggerContext();
+    const {
+      rowInFocus,
+      setRowInFocus,
+      searchedInput,
+      setSearchedInput,
+      highlightedRowIndexes,
+      setHighlightedRowIndexes,
+      currentDataSource,
+      searchedWordIndexes,
+      setSearchedWordIndexes,
+    } = loggerContext;
     const DEFAULT_SEARCH_INDEX = 0;
     const loggerRef = React.createRef<any>();
-    Logger.displayName = 'Logger';
     const dataToRender = createLoggerDataItem(
         parsedData,
-        searchedInput,
         loggerRef,
         rowInFocus,
-        setRowInFocus,
         highlightedRowIndexes,
         setHighlightedRowIndexes,
-        searchedWordIndexes
     );
  
     const scrollToRow = (searchedRowIndex) => {
@@ -99,7 +94,7 @@ const Logger: React.FC<LoggerProps> = memo(({
       }
 
       else if( isArrayOfString(data)){
-        setDataSourcesAmount(data.length);
+        setDataSourcesAmount(data.length); 
         setParsedData(parseConsoleOutput(data[currentDataSource]));
       }
 
@@ -114,6 +109,12 @@ const Logger: React.FC<LoggerProps> = memo(({
     useEffect(() => {
       console.log('Testing out changes in my rowInFocus from Logger: ', rowInFocus);
     }, [rowInFocus]);
+
+    /* 
+      FOR SEARCH FUNCTIONALITY: All I need is useEffect hook looking for changes in search. 
+      Any value that is directly changed in the context searchedInput is sent directly to the
+      new offloaded search utils.    
+    */
 
   /* Necessitates receiving String as a data */
   const parseConsoleOutput = (data) => {
@@ -177,22 +178,11 @@ const Logger: React.FC<LoggerProps> = memo(({
     return (
       <>
         <div className='ins-c-logger'>
-          <LoggerContextProvider>
             <LoggerToolbar
-                rowInFocus={ rowInFocus }
-                setRowInFocus={ setRowInFocus }
-                scrollToRow={ scrollToRow } // Add to context
-                searchedWordIndexes={ searchedWordIndexes }
-                setSearchedWordIndexes={ setSearchedWordIndexes }
-                searchedInput={ searchedInput }
-                setSearchedInput={ setSearchedInput }
+                scrollToRow={ scrollToRow }
                 searchForKeyword={ searchForKeyword } // Figure out a way to decouple this from parent component
-                customToolbarActions={customToolbarActions} // Need to encapsulate whatever come through with components customized for the logger (logger specific buttons/dropdown/kebabs)
-                currentDataSource={currentDataSource}
-                setCurrentDataSource={setCurrentDataSource}
-                dataSourcesAmount={dataSourcesAmount} // can keep moving this as a prop, immutable variable 
-                dataSourceTitles={dataSourcesTitles} // optional prop, should be optional on context as well. 
-                setDataSourceTitles={setDataSourcesTitles}
+                customToolbarActions={ customToolbarActions } // Need to encapsulate whatever come through with components customized for the logger (logger specific buttons/dropdown/kebabs)
+                dataSourcesAmount={dataSourcesAmount } // can keep moving this as a prop, immutable variable 
             />
             <List
                 className='logger__grid'
@@ -206,7 +196,6 @@ const Logger: React.FC<LoggerProps> = memo(({
             >
                 { LoggerRow }
             </List>
-          </LoggerContextProvider>
         </div>
       </>
     );

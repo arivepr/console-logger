@@ -5,7 +5,7 @@ export const useLoggerContext = () => {
 };
 
 export interface LoggerContextInterface {
-  searchInput: string | null | undefined;
+  searchedInput: string | null | undefined;
   rowInFocus: number | null | undefined;
   searchedWordIndexes: Array<number | null | undefined>;
   highlightedRowIndexes: Array<number | null | undefined>;
@@ -14,7 +14,7 @@ export interface LoggerContextInterface {
   setCurrentDataSource?: (index: number) => void;
   setDataSourceTitles?: (dataTitles: Array<string | null>) => void;
   setRowInFocus?: (index: number) => void;
-  setSearchInput: (input: string) => void;
+  setSearchedInput: (input: string) => void;
   setHighlightedRowIndexes: (indexes: Array<number>) => void;
   setSearchedWordIndexes: (indexes: Array<number>) => void;
 };
@@ -22,17 +22,17 @@ export interface LoggerContextInterface {
 const LoggerContext = createContext<LoggerContextInterface | null>(null);
 
 export const LoggerContextProvider = ({ children }) => {
-  const [ searchInput, setSearchInput ] = useState<string | null>('');
+  const [ searchedInput, setSearchedInput ] = useState<string | null>('');
   const [ rowInFocus, setRowInFocus ] = useState<number | null>(null);
   const [ searchedWordIndexes, setSearchedWordIndexes ] = useState<Array<number> | null>([])
   const [ highlightedRowIndexes, setHighlightedRowIndexes ] = useState<Array<number> | null>([]);
-  const [ currentDataSource, setCurrentDataSource ] = useState<number | null | undefined>(); 
+  const [ currentDataSource, setCurrentDataSource ] = useState<number | null | undefined>(0); 
   /* Rather than initialize at default, i should init at an empty array and base everything around that opposed to how it is now */
   const [ dataSourceTitles, setDataSourceTitles ] = useState<Array<string | null | undefined>>(['Default']); 
 
   return (
     <LoggerContext.Provider value={{
-      searchInput,
+      searchedInput,
       rowInFocus,
       dataSourceTitles,
       searchedWordIndexes,
@@ -41,7 +41,7 @@ export const LoggerContextProvider = ({ children }) => {
       setCurrentDataSource,
       setDataSourceTitles,  
       setRowInFocus,
-      setSearchInput,
+      setSearchedInput,
       setHighlightedRowIndexes,
       setSearchedWordIndexes,
     }}>

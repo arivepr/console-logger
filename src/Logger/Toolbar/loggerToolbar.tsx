@@ -6,47 +6,40 @@ import {
 } from '@patternfly/react-core';
 import ToolbarInputGroup from '../ToolbarInputGroup';
 import '../styles/loggerToolbar.styles.scss';
+import { NUMBER_INDEX_DELTA } from '../utils/constants';
 
 export interface LoggerToolbarProps extends React.HTMLProps<HTMLDivElement> {
-  searchedWordIndexes: Array<number>;
-  rowInFocus: number;
-  searchedInput: string;
   dataSourcesAmount: number;
-  currentDataSource: number;
   dataSourceTitles?: Array<string | null | undefined>;
   customToolbarActions?: () => React.ReactNode | React.ReactNode[];
-  setSearchedInput: (inputString: string) => void;
-  setSearchedWordIndexes: (searchedWordIndexes:Array<number>) => undefined | void;
   searchForKeyword: (keyword:string) => void;
-  setRowInFocus: (prevState: undefined | number | undefined) => undefined | void;
   scrollToRow: (searchedRow: number) => void;
-  setCurrentDataSource: (dataSource: number) => void;
-  setDataSourceTitles: (dataTitles: Array<string | null>) => void;
  };
 
 const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
-    searchedWordIndexes,
-    setSearchedWordIndexes,
     scrollToRow,
-    rowInFocus,
-    setRowInFocus,
-    setSearchedInput,
     customToolbarActions,
-    searchedInput,
-    searchForKeyword,
     dataSourcesAmount,
-    currentDataSource,
-    setCurrentDataSource,
-    dataSourceTitles,
-    setDataSourceTitles
+    searchForKeyword,
 }) => {
     const [ userInput, setUserInput ]  = useState('');
     const [ foundWordIndex, setFoundWordIndex ] = useState<number | undefined>(-1);
     const loggerState = useLoggerContext();
+    const {
+      searchedWordIndexes,
+      setSearchedWordIndexes,
+      rowInFocus,
+      setRowInFocus,
+      currentDataSource,
+      setSearchedInput,
+      dataSourceTitles,
+      setDataSourceTitles
+    } = loggerState;
     const value = userInput;
     const DEFAULT_FOCUS = -1;
     const DEFAULT_INDEX = 1;
 
+    /* Making sure there is no leftover focused/highlighted rows */
     useEffect(() => {
       if (userInput.length === 0) {
         handleClear();
@@ -56,11 +49,26 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
       setSearchedInput(userInput);
     }, [ userInput ]);
 
+    /* Defaulting the first focused row that contain searched keywords */
     useEffect(() => {
       if( searchedWordIndexes.length >= 1 ){
         setFoundWordIndex(DEFAULT_INDEX);
       }
     }, [ searchedWordIndexes ]);
+
+    /* Defaulting the names of the dropdown items if the default toolbar */ 
+    useEffect(() => {
+      if(dataSourcesAmount > 1 && dataSourceTitles[currentDataSource] === "Default" ){
+        let titleCounter:number = 0;
+        let newTitles:Array<string | null| undefined> = [];
+        while (titleCounter < dataSourcesAmount){
+          newTitles.push(`Data Source ${titleCounter + NUMBER_INDEX_DELTA}`)
+          ++titleCounter;
+        }
+
+        setDataSourceTitles(newTitles);
+      }
+    }, [dataSourcesAmount]);
 
 
     const handleClear = () => {
@@ -70,6 +78,7 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
         setRowInFocus(DEFAULT_FOCUS);
     };
 
+    /* Moving focus over to next row containing searched word */
     const handleNextSearchItem = () => {
         let oldIndex = searchedWordIndexes.indexOf(rowInFocus);
         let temp = foundWordIndex;
@@ -82,6 +91,7 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
         scrollToRow(searchedWordIndexes[foundWordIndex]);
     };
 
+    /* Moving focus over to next row containing searched word */
     const handlePrevSearchItem = () => {
         let oldIndex = searchedWordIndexes.indexOf(rowInFocus);
         let temp = foundWordIndex;
@@ -97,16 +107,14 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
     return (
         <Level className='logger__toolbar'>
             <LevelItem className='toolbar__searchbar-group'>
-              <ToolbarInputGroup 
+              <ToolbarInputGroup
+                searchForKeyword={searchForKeyword}
+                scrollToRow={scrollToRow}
                 customToolbarActions={customToolbarActions} 
                 handleNextSearchItem={handleNextSearchItem} 
                 handlePrevSearchItem={handlePrevSearchItem}
                 handleClear={handleClear} 
-                currentDataSource={currentDataSource}
-                setCurrentDataSource={setCurrentDataSource}
                 dataSourcesAmount={dataSourcesAmount}
-                dataSourceTitles={dataSourceTitles}
-                setDataSourceTitles={setDataSourceTitles}
               /> 
             </LevelItem>
         </Level>

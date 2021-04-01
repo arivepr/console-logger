@@ -1,5 +1,4 @@
 import React from 'react';
-import Logger from './Logger/LoggerRoot';
 // import data from './Logger/data/testData';
 import { data }from './Logger/data/realTestData';
 import { bigData, longLine } from './Logger/data/bigTestData';
@@ -28,7 +27,7 @@ function App() {
   return (
     <div className="root-div">
       {/* <Logger data={data.data} onFullscreen={} onExternalOpen={} /> */}
-      <Logger data={[bigData.data, longLine.data]} />
+      {/* <Logger data={[bigData.data, longLine.data]} /> */}
       &nbsp;
       <LoggerIndex data={[bigData.data, longLine.data]} />
       &nbsp;

@@ -12,8 +12,13 @@ interface ToolbarDropdownInterface extends React.HTMLProps<HTMLDivElement> {
   dataSourceTitles?: Array<string>,
   setDataSourceTitles?: (dataTitles: Array<string | null>) => void,
   setCurrentDataSource: (index: number) => void,
+  /* Prop for any user defined function for using the dropdown select */
+  onDropDownSelect?: () => void,
 }
 
+/* 
+  Most of the functionality is currently baked in to this component. This will be cleaned out to reduce bloat
+*/
 const ToolbarDropdown: React.FC<ToolbarDropdownInterface> = ({
   dataSourcesAmount = 1,
   currentDataSource = 0,
@@ -22,20 +27,6 @@ const ToolbarDropdown: React.FC<ToolbarDropdownInterface> = ({
   setDataSourceTitles,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-
-  // Hacky solution to have here, but it gives the desired output for now. 
-  useEffect(() => {
-    if(dataSourcesAmount > 1 && dataSourceTitles[currentDataSource] === "Default" ){
-      let titleCounter:number = 0;
-      let newTitles:Array<string | null| undefined> = [];
-      while (titleCounter < dataSourcesAmount){
-        newTitles.push(`Data Source ${titleCounter + NUMBER_INDEX_DELTA}`)
-        ++titleCounter;
-      }
-
-      setDataSourceTitles(newTitles);
-    }
-  }, [dataSourcesAmount]);
 
   const onSelect = () => {
     setIsOpen(!isOpen);
@@ -49,6 +40,8 @@ const ToolbarDropdown: React.FC<ToolbarDropdownInterface> = ({
     setCurrentDataSource(index);
   };
 
+
+
   const dropdownItems = dataSourceTitles.map((title, index) => (<DropdownItem key={index} component="button" onClick={() => onDropDownItemAction(index)}>{title}</DropdownItem>));
 
   return (
@@ -59,9 +52,11 @@ const ToolbarDropdown: React.FC<ToolbarDropdownInterface> = ({
             {dataSourceTitles[currentDataSource]}
           </DropdownToggle>
         }  
-        isOpen={isOpen} dropdownItems={dropdownItems}/>
+        isOpen={isOpen}
+        dropdownItems={dropdownItems}
+      />
     </>
   )
 };
 
-export default ToolbarDropdown
+export default ToolbarDropdown;

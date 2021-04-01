@@ -8,60 +8,60 @@ import { useLoggerContext } from './LoggerRoot/LoggerContext';
 import "./styles/loggerToolbar.styles.scss";
 
 interface ToolbarInputGroup extends LoggerToolbarProps {
-  dataSources?: Array<string>
   includesFullScreen?: boolean;
   includesPlay?: boolean;
   includesLaunchExternal?: boolean;
   includesDownload?: boolean;
-  includesCustomActions?: boolean;
-  multipleDataSources?: boolean;
   dataSourcesAmount: number;
-  dataSourceTitles?: Array<string | null | undefined>;
+  dropDownItems?: () => React.ReactNode | React.ReactNode[];
+  onSelect?: () => void;
   customToolbarActions?: () => React.ReactNode | React.ReactNode[]; 
   handleNextSearchItem: () => void;
   handlePrevSearchItem: () => void;
   handleClear: () => void;
-  setDataSourceTitles: (dataTitles:Array<string | null>) => void;
 }
 
 const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
-  includesFullScreen = true,
+  includesFullScreen = false,
   includesPlay = false,
   includesLaunchExternal = true,
   includesDownload = false,
-  includesCustomActions = true,
-  customToolbarActions = null,
+  customToolbarActions,
   dataSourcesAmount,
-  currentDataSource = 0,
-  setCurrentDataSource,
+  handleClear
 }) => {
   const loggerContext = useLoggerContext();
   const {
     rowInFocus, 
     setRowInFocus,
     dataSourceTitles,
-    setDataSourceTitles
+    setDataSourceTitles,
+    currentDataSource,
+    setCurrentDataSource,
   } = loggerContext;
   const dropdownItems = [];
   const [value, setValue] = useState('search');
   
   const ref = useRef(null);
 
+  // Need to make sure where this is coming from, not sure why this was added.
   const onSearch = (index:number) => {
     console.log('Checking in on my current inFocus: ', rowInFocus);
     setRowInFocus(index);
   }
 
+  /* Defining how to switch from one data source to another should be done here rather than the lowest lvl */
+
    return (
     <div>
       <InputGroup >
         <InputGroup className="toolbar__defautl-selector">
-          <ToolbarDropdown 
-            currentDataSource={currentDataSource}
-            setCurrentDataSource={setCurrentDataSource}
+          <ToolbarDropdown
             dataSourceTitles={dataSourceTitles}
-            dataSourcesAmount={dataSourcesAmount} 
-            setDataSourceTitles={setDataSourceTitles} 
+            setDataSourceTitles={setDataSourceTitles}
+            dataSourcesAmount={dataSourcesAmount}
+            setCurrentDataSource={setCurrentDataSource}
+            currentDataSource={currentDataSource}
           />
         </InputGroup>
         <InputGroup className="toolbar__default-actions">
