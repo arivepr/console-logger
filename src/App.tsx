@@ -4,9 +4,6 @@ import { data }from './Logger/data/realTestData';
 import { bigData, longLine } from './Logger/data/bigTestData';
 import { Button } from '@patternfly/react-core';
 import LoggerIndex from './Logger/LoggerRoot';
-import "@patternfly/react-core/dist/styles/base.css";
-import './App.css';
-
 // data={data.message.payload.console}
 
 const customToolbarActions = () => {

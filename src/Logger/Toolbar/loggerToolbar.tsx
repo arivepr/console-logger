@@ -5,14 +5,14 @@ import {
   LevelItem, 
 } from '@patternfly/react-core';
 import ToolbarInputGroup from '../ToolbarInputGroup';
-import '../styles/loggerToolbar.styles.scss';
 import { NUMBER_INDEX_DELTA } from '../utils/constants';
+import '../styles/loggerToolbar.styles.scss';
 
 export interface LoggerToolbarProps extends React.HTMLProps<HTMLDivElement> {
   dataSourcesAmount: number;
   dataSourceTitles?: Array<string | null | undefined>;
   customToolbarActions?: () => React.ReactNode | React.ReactNode[];
-  searchForKeyword: (keyword:string) => void;
+  // searchForKeyword: (keyword:string) => void;
   scrollToRow: (searchedRow: number) => void;
  };
 
@@ -20,7 +20,7 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
     scrollToRow,
     customToolbarActions,
     dataSourcesAmount,
-    searchForKeyword,
+    // searchForKeyword,
 }) => {
     const [ userInput, setUserInput ]  = useState('');
     const [ foundWordIndex, setFoundWordIndex ] = useState<number | undefined>(-1);
@@ -108,7 +108,7 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
         <Level className='logger__toolbar'>
             <LevelItem className='toolbar__searchbar-group'>
               <ToolbarInputGroup
-                searchForKeyword={searchForKeyword}
+                // searchForKeyword={searchForKeyword}
                 scrollToRow={scrollToRow}
                 customToolbarActions={customToolbarActions} 
                 handleNextSearchItem={handleNextSearchItem} 

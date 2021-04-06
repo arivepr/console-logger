@@ -3,7 +3,6 @@ import { Button, TextInput, SearchInput, Toolbar, ToolbarItem, ToolbarContent, I
 import { SearchIcon, DownloadIcon, ExpandIcon, ExternalLinkAltIcon, PlayIcon, ExportIcon } from '@patternfly/react-icons';
 import { LoggerToolbarProps } from './Toolbar/loggerToolbar';
 import ToolbarDropdown from './toolbarDropdown';
-import classnames from 'classnames';
 import { useLoggerContext } from './LoggerRoot/LoggerContext';
 import "./styles/loggerToolbar.styles.scss";
 
@@ -22,10 +21,12 @@ interface ToolbarInputGroup extends LoggerToolbarProps {
 }
 
 const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
-  includesFullScreen = false,
+  includesFullScreen = true,
   includesPlay = false,
   includesLaunchExternal = true,
   includesDownload = false,
+  handleNextSearchItem,
+  handlePrevSearchItem,
   customToolbarActions,
   dataSourcesAmount,
   handleClear
@@ -39,105 +40,98 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
     currentDataSource,
     setCurrentDataSource,
   } = loggerContext;
-  const dropdownItems = [];
-  const [value, setValue] = useState('search');
+  const [value, setValue] = useState('');
   
   const ref = useRef(null);
+
+  /* Input validation happens at every re-render where input changes */
+  // useEffect(() => {
+
+  // }, [value]);
 
   // Need to make sure where this is coming from, not sure why this was added.
   const onSearch = (index:number) => {
     console.log('Checking in on my current inFocus: ', rowInFocus);
     setRowInFocus(index);
-  }
+  };
 
   /* Defining how to switch from one data source to another should be done here rather than the lowest lvl */
 
-   return (
-    <div>
-      <InputGroup >
-        <InputGroup className="toolbar__defautl-selector">
-          <ToolbarDropdown
-            dataSourceTitles={dataSourceTitles}
-            setDataSourceTitles={setDataSourceTitles}
-            dataSourcesAmount={dataSourcesAmount}
-            setCurrentDataSource={setCurrentDataSource}
-            currentDataSource={currentDataSource}
-          />
-        </InputGroup>
-        <InputGroup className="toolbar__default-actions">
-          { includesPlay && (
+  // This way the user can use their own custom toolbar items if they want to? via props
+  const toolbarItems = () => {
+    return(
+      <>
+        <ToolbarItem spacer={{default: "spacerMd"}}>
+            <ToolbarDropdown 
+              currentDataSource={currentDataSource}
+              setCurrentDataSource={setCurrentDataSource}
+              dataSourcesAmount={dataSourcesAmount}
+              dataSourceTitles={dataSourceTitles}
+              setDataSourceTitles={setDataSourceTitles}
+            />
+        </ToolbarItem>
+        <ToolbarItem spacer={{default: "spacerLg"}}>
+          {/* <InputGroup>
+            <SearchInput value={value} onChange={setValue} onClear={() => setValue('')}/>
+          </InputGroup> */}
+          <InputGroup>
+            {/* <TextInput 
+              id="searchBar" 
+              type="search" 
+              aria-label="Search for string" 
+              value={value} 
+              onChange={input => setValue(input)} 
+              ref={ref}
+              className="toolbar__searchbar"
+            /> */}
+            <SearchInput 
+              placeholder='Search'
+              value={value}
+              onNextClick={() => handleNextSearchItem()}
+              onPreviousClick={() => handlePrevSearchItem()}
+              onChange={(input) => setValue(input)}
+            />
+          </InputGroup>
+          <InputGroup className="toolbar__default-actions">
+            { includesPlay && (
               <Button variant="control" className="searchbar__btn">
                 <PlayIcon />
               </Button>
-          )}
-          { includesFullScreen && (
+            )}
+            { includesFullScreen && (
               <Button variant="control" className="searchbar__btn">
                 <ExpandIcon />
               </Button>
-          )}
-          { includesDownload && (
+            )}
+            { includesDownload && (
               <Button variant="control" className="searchbar__btn">
                 <DownloadIcon />
               </Button>
-          )}
-          { includesLaunchExternal && (
+            )}
+            { includesLaunchExternal && (
               <Button variant="control" className="searchbar__btn">
                 <ExternalLinkAltIcon />
               </Button>
-          )}
-        </InputGroup>
-        { customToolbarActions && (
-            <InputGroup>
-              { customToolbarActions() }
-            </InputGroup>
-        )}
-        <InputGroup>
-          <TextInput 
-            id="searchBar" 
-            type="search" 
-            aria-label="Search for string" 
-            value={value} 
-            onChange={input => setValue(input)} 
-            ref={ref}
-            className="toolbar__searchbar"
-          />
-          <Button variant="control" className="searchbar__btn" onClick={() => onSearch(1)}>
-            <SearchIcon />
-          </Button>
-        </InputGroup>  
-      </InputGroup>
-    </div>
+            )}
+          </InputGroup>
+        </ToolbarItem>
+      </>
+    );
+  };
+
+  return (
+    <>
+      <Toolbar inset={{
+        default:'insetSm', 
+        md:'insetLg'
+      }}
+      >
+        <ToolbarContent>
+          {toolbarItems()}
+        </ToolbarContent>        
+      </Toolbar>
+    </>
   );
-
-  // This way the user can use their own custom toolbar items if they want to? via props
-  // const toolbarItems = () => {
-  //   return(
-  //     <>
-  //       <ToolbarItem spacer={{default: "spacerMd"}}>
-  //           <ToolbarDropdown 
-  //             currentDataSource={currentDataSource}
-  //             setCurrentDataSource={setCurrentDataSource}
-  //             dataSourcesAmount={dataSourcesAmount}  
-  //           />
-  //       </ToolbarItem>
-  //       <ToolbarItem spacer={{default: "spacerLg"}}>
-  //         <InputGroup>
-  //           <SearchInput value={value} onChange={setValue} onClear={() => setValue('')}/>
-  //         </InputGroup>
-  //       </ToolbarItem>
-  //     </>
-  //   );
-  // };
-
-  // return (
-  //   <>
-  //     <Toolbar>
-  //       <ToolbarContent>
-  //         {toolbarItems()}
-  //       </ToolbarContent>        
-  //     </Toolbar>
-  //   </>
-  // );
-}
+};
 
 export default ToolbarInputGroup;

@@ -5,10 +5,10 @@ import LoggerToolbar from '../Toolbar/loggerToolbar';
 import { useLoggerContext } from './LoggerContext';
 import memoize from 'memoize-one';
 import { LOGGER_ROW_HEIGHT, LOGGER_HEIGHT, LOGGER_WIDTH } from '../utils/constants'; // Anyway to calculate this dynamically with jsx? Figure it out.
-import { isArrayOfString } from '../utils/utils';
+import { isArrayOfString, searchForKeyword, searchForIndex } from '../utils/utils';
+import "@patternfly/react-core/dist/styles/base.css";
 import '../styles/base.scss';
 import '../styles/logger.styles.scss';
-import '../styles/styles.css';
 
 // Wrapping multiple variables around memoization to rerender loggerRow only when these change, and to send both through a single obj.
 const createLoggerDataItem = memoize((
@@ -59,7 +59,6 @@ const Logger: React.FC<LoggerProps> = memo(({
       rowInFocus,
       setRowInFocus,
       searchedInput,
-      setSearchedInput,
       highlightedRowIndexes,
       setHighlightedRowIndexes,
       currentDataSource,
@@ -75,13 +74,6 @@ const Logger: React.FC<LoggerProps> = memo(({
         highlightedRowIndexes,
         setHighlightedRowIndexes,
     );
- 
-    const scrollToRow = (searchedRowIndex) => {
-        setRowInFocus(searchedRowIndex);
-        loggerRef.current.scrollToItem(searchedRowIndex, 'center');
-
-        return true;
-    };
 
     /* 
       Parsing depending on whether the data given is a string or a full array of strings 
@@ -110,63 +102,38 @@ const Logger: React.FC<LoggerProps> = memo(({
       console.log('Testing out changes in my rowInFocus from Logger: ', rowInFocus);
     }, [rowInFocus]);
 
-    /* 
-      FOR SEARCH FUNCTIONALITY: All I need is useEffect hook looking for changes in search. 
-      Any value that is directly changed in the context searchedInput is sent directly to the
-      new offloaded search utils.    
-    */
+    /* Updating searchedResults context state given changes in searched input */
+    useEffect(() => {
+      let foundKeywordIndexes: Array<number | null | undefined> = [];
 
-  /* Necessitates receiving String as a data */
-  const parseConsoleOutput = (data) => {
-      const stringToSplitWith = '\n';
-      const cleanString = data.split(stringToSplitWith);
-      // console.log('Testing data before parsing: ', data);
-      // console.log('Testing this after splitting the string: ', cleanString);
-  
-      // if (parseData) {
-      //   return cleanUpStringArray(cleanString);
-      // }
+      if(searchedInput !== '') {
+        foundKeywordIndexes = searchForKeyword(searchedInput, parsedData);
+        scrollToRow(foundKeywordIndexes[DEFAULT_SEARCH_INDEX]);
+        console.log('CAHNGING! Found it in: ', foundKeywordIndexes[DEFAULT_SEARCH_INDEX]);
+      }
       
-      return cleanString;
-  };
+      //scrollToRow(); 
+    }, [searchedInput]);
 
-    /* 
-      Extract this out of the parent component, and figure out a way to decouple of it from the component. It should take an array, and return an array of indexes
-      where the searchedInput is found throughout the data array. Should always be searching an array of strings. Look into lazy log for ideas.
-    */
-    const searchForKeyword = () => { 
-        const searchResults = [];
-        let rowIndexCounter = 0;
-        let keywordIndexPosition = 0;
-        let lowerCaseRow = "";
+    const scrollToRow = (searchedRowIndex) => {
+      setRowInFocus(searchedRowIndex);
+      loggerRef.current.scrollToItem(searchedRowIndex, 'center');
 
-        if (searchedInput.match('[:][1-9]\d*')) {
-            const splitInput = searchedInput.split(':');
-            const offsetIndex = parseInt(splitInput[1]) - 1;
-            scrollToRow(offsetIndex); // Needs input validation/Clean Up for readability later
-            setSearchedInput('');
-            return;
-        }
+      return true;
+    };
 
-        for (const row of parsedData) {
-            lowerCaseRow = row.toLowerCase();
-            keywordIndexPosition = lowerCaseRow.search(searchedInput);
-
-            if (keywordIndexPosition !== -1) {
-                searchResults.push(rowIndexCounter);
-            }
-
-            rowIndexCounter++;
-        }
-
-        if(searchResults.length > 0) {
-          setSearchedWordIndexes([...searchResults]); // testing this for search
-          scrollToRow(searchResults[DEFAULT_SEARCH_INDEX]);
-        }
-
-        else if(searchResults.length <= 0) {
-          setRowInFocus(-1);
-        }
+    /* Necessitates receiving String as a data */
+    const parseConsoleOutput = (data) => {
+        const stringToSplitWith = '\n';
+        const cleanString = data.split(stringToSplitWith);
+        // console.log('Testing data before parsing: ', data);
+        // console.log('Testing this after splitting the string: ', cleanString);
+    
+        // if (parseData) {
+        //   return cleanUpStringArray(cleanString);
+        // }
+        
+        return cleanString;
     };
 
     const setRowHeight = (index) => {
@@ -180,7 +147,7 @@ const Logger: React.FC<LoggerProps> = memo(({
         <div className='ins-c-logger'>
             <LoggerToolbar
                 scrollToRow={ scrollToRow }
-                searchForKeyword={ searchForKeyword } // Figure out a way to decouple this from parent component
+                // searchForKeyword={ searchForKeyword } // Figure out a way to decouple this from parent component
                 customToolbarActions={ customToolbarActions } // Need to encapsulate whatever come through with components customized for the logger (logger specific buttons/dropdown/kebabs)
                 dataSourcesAmount={dataSourcesAmount } // can keep moving this as a prop, immutable variable 
             />
