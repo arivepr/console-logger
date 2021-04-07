@@ -98,8 +98,8 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
     };
 
     return (
-        <Level className='logger__toolbar'>
-            <LevelItem className='toolbar__searchbar-group'>
+        // <Level className='logger__toolbar'>
+        //     <LevelItem className='toolbar__searchbar-group'>
               <ToolbarInputGroup
                 scrollToRow={scrollToRow}
                 customToolbarActions={customToolbarActions} 
@@ -108,8 +108,8 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
                 handleClear={handleClear} 
                 dataSourcesAmount={dataSourcesAmount}
               /> 
-            </LevelItem>
-        </Level>
+        //     </LevelItem>
+        // </Level>
     );
 
 };
