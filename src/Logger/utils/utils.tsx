@@ -62,12 +62,12 @@ export const searchForIndex = (searchedInput: string, totalRows: Array<number>) 
   return;
 };
 
- /* 
+/* 
   Necessitates receiving String as a data. 
   This needs to be prepped as well to be used from the logger without a problem.
   The user can also provider their own parsing methods if they want to experiment with passing data straight into the logger with their own format.  
 */
-export const parseConsoleOutput = (data) => {
+export const parseConsoleOutput = (data:string) => {
   const stringToSplitWith = '\n';
   const cleanString = data.split(stringToSplitWith);
   // console.log('Testing data before parsing: ', data);
@@ -80,9 +80,16 @@ export const parseConsoleOutput = (data) => {
   return cleanString;
 };
 
+export const inputValidation = (inputString: string) => {
+  if(inputString.length >= 3 ){
+    return true;
+  }
+  else
+    return false;
+};
+
   /* 
-    Extract this out of the parent component, and figure out a way to decouple of it from the component. It should take an array, and return an array of indexes
-    where the searchedInput is found throughout the data array. Should always be searching an array of strings. Look into lazy log for ideas.
+     Old search function for reference. Only smol differences, keeping just until I finish testing. 
   */
   // Once confirmed as working, delete it. 
   // const searchForKeyword = () => { 

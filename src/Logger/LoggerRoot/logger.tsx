@@ -28,11 +28,19 @@ const createLoggerDataItem = memoize((
 interface LoggerProps extends React.Props<HTMLElement> {
   /* String that wil be processed into the logger for output */
   data: string | Array<string>;
+  /* Flag for including the fullscreen action*/
+  includesFullScreen?: boolean;
+  /* Flag for including the play/pause action */
+  includesPlay?: boolean;
+  /* Flag for including the external/newTab action */
+  includesLaunchExternal?: boolean;
+  /* Flag for download button action */
+  includesDownload?: boolean;
   /* This is for developers to just use a straight logger output */
   hasSearchbar?: boolean;
   /* This is for devs who want their own functionality attached to the logger*/
   customToolbar?: boolean;
-  /* This is a flag for any post processing on data */ // Need to actually test this, I think it cannot be optional
+  /* This is a flag for any post processing on data */
   parseData?: boolean;
   /* Custom styling for loggers */
   className?: string;
@@ -75,10 +83,7 @@ const Logger: React.FC<LoggerProps> = memo(({
         setHighlightedRowIndexes,
     );
 
-    /* 
-      Parsing depending on whether the data given is a string or a full array of strings 
-      Should also take care of verifying the type of data we're taking in the first place. Figure it out. 
-    */
+    /* Parsing depending on whether the data given is a string or a full array of strings */
     useEffect( () => { 
       if( typeof data === "string") {
         console.log('We have a SINGULAR string!');
@@ -92,15 +97,10 @@ const Logger: React.FC<LoggerProps> = memo(({
 
     }, []);
 
-    /* This might be causing unnecessary re-renders, do we need this here? */
+    /* switching between data sources depending on user selection from toolbar (is not used when the toolbar isn't included) */
     useEffect(() => {
-      console.log('WARNING: changing data source over to: ', currentDataSource);
       setParsedData(parseConsoleOutput(data[currentDataSource]));
     }, [currentDataSource]);
-
-    useEffect(() => {
-      console.log('Testing out changes in my rowInFocus from Logger: ', rowInFocus);
-    }, [rowInFocus]);
 
     /* Updating searchedResults context state given changes in searched input */
     useEffect(() => {
@@ -108,26 +108,24 @@ const Logger: React.FC<LoggerProps> = memo(({
 
       if(searchedInput !== '') {
         foundKeywordIndexes = searchForKeyword(searchedInput, parsedData);
-        scrollToRow(foundKeywordIndexes[DEFAULT_SEARCH_INDEX]);
-        console.log('CAHNGING! Found it in: ', foundKeywordIndexes[DEFAULT_SEARCH_INDEX]);
+        
+        if(foundKeywordIndexes.length !== 0){
+          setSearchedWordIndexes(foundKeywordIndexes);
+          scrollToRow(foundKeywordIndexes[DEFAULT_SEARCH_INDEX]);
+        }
       }
-      
-      //scrollToRow(); 
     }, [searchedInput]);
 
     const scrollToRow = (searchedRowIndex) => {
-      setRowInFocus(searchedRowIndex);
+      setRowInFocus(searchedRowIndex); // This might be something we have to move out afterwards.
       loggerRef.current.scrollToItem(searchedRowIndex, 'center');
-
       return true;
     };
 
-    /* Necessitates receiving String as a data */
+    /* Necessitates receiving String as a data. User should be able to provide their own parsing method, or already parse it prior to adding it here. */
     const parseConsoleOutput = (data) => {
         const stringToSplitWith = '\n';
         const cleanString = data.split(stringToSplitWith);
-        // console.log('Testing data before parsing: ', data);
-        // console.log('Testing this after splitting the string: ', cleanString);
     
         // if (parseData) {
         //   return cleanUpStringArray(cleanString);
@@ -136,10 +134,17 @@ const Logger: React.FC<LoggerProps> = memo(({
         return cleanString;
     };
 
+    // const setRowHeight = (index) => {
+    //     return index % 2 === 0
+    //         ? LOGGER_ROW_HEIGHT
+    //         : LOGGER_ROW_HEIGHT;
+    // };
+
+    /* Precursor to enabling word-wrapping, leaving alone although it's practically useless atm. */
     const setRowHeight = (index) => {
-        return index % 2 === 0
-            ? LOGGER_ROW_HEIGHT
-            : LOGGER_ROW_HEIGHT;
+      return index % 2 === 0
+          ? 60
+          : 60;
     };
 
     return (
@@ -156,7 +161,7 @@ const Logger: React.FC<LoggerProps> = memo(({
                 rowHeight={ index => setRowHeight(index) }
                 height={ LOGGER_HEIGHT }
                 width={"100%"} // Figure out what exactly this translates to
-                itemSize={ () => 30 }
+                itemSize={ () => 30}
                 itemCount={ `${ parsedData.length }` }
                 itemData={ dataToRender }
                 ref={ loggerRef }

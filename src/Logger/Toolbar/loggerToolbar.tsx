@@ -83,6 +83,8 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
         let oldIndex = searchedWordIndexes.indexOf(rowInFocus);
         let temp = foundWordIndex;
 
+        console.log('Checking rowInFocus inside of handleNextSearch: ', rowInFocus);
+
         if (oldIndex >= searchedWordIndexes.length - 1) {
             return null;
         }

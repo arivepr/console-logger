@@ -39,15 +39,20 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
     setDataSourceTitles,
     currentDataSource,
     setCurrentDataSource,
+    setSearchedInput
   } = loggerContext;
   const [value, setValue] = useState('');
+  const [currentSearchItemCount, setCurrentStepItemCount]
   
   const ref = useRef(null);
 
   /* Input validation happens at every re-render where input changes */
-  // useEffect(() => {
-
-  // }, [value]);
+  useEffect(() => {
+    if(value.length > 3){
+      console.log('Testing out my input: ', value);
+      setSearchedInput(value);
+    }
+  }, [value]);
 
   // Need to make sure where this is coming from, not sure why this was added.
   const onSearch = (index:number) => {
@@ -90,6 +95,8 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
               onNextClick={() => handleNextSearchItem()}
               onPreviousClick={() => handlePrevSearchItem()}
               onChange={(input) => setValue(input)}
+              resultsCount={`${}`}
+              className="toolbar__searchbar"
             />
           </InputGroup>
           <InputGroup className="toolbar__default-actions">

@@ -23,10 +23,8 @@ function App() {
 
   return (
     <div className="root-div">
-      {/* <Logger data={data.data} onFullscreen={} onExternalOpen={} /> */}
-      {/* <Logger data={[bigData.data, longLine.data]} /> */}
       &nbsp;
-      <LoggerIndex data={[bigData.data, longLine.data]} />
+      <LoggerIndex data={[bigData.data, longLine.data, data.data]} />
       &nbsp;
     </div>
 
