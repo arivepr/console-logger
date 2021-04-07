@@ -39,28 +39,12 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
     setDataSourceTitles,
     currentDataSource,
     setCurrentDataSource,
-    setSearchedInput
+    searchedInput,
+    setSearchedInput,
+    searchedWordIndexes
   } = loggerContext;
-  const [value, setValue] = useState('');
-  const [currentSearchItemCount, setCurrentStepItemCount]
-  
-  const ref = useRef(null);
-
-  /* Input validation happens at every re-render where input changes */
-  useEffect(() => {
-    if(value.length > 3){
-      console.log('Testing out my input: ', value);
-      setSearchedInput(value);
-    }
-  }, [value]);
-
-  // Need to make sure where this is coming from, not sure why this was added.
-  const onSearch = (index:number) => {
-    console.log('Checking in on my current inFocus: ', rowInFocus);
-    setRowInFocus(index);
-  };
-
-  /* Defining how to switch from one data source to another should be done here rather than the lowest lvl */
+  // const [value, setValue] = useState('');
+  const [currentSearchItemCount, setCurrentStepItemCount] = useState(1); // need to have a function not to display these unless there are any found searches
 
   // This way the user can use their own custom toolbar items if they want to? via props
   const toolbarItems = () => {
@@ -76,26 +60,15 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
             />
         </ToolbarItem>
         <ToolbarItem spacer={{default: "spacerLg"}}>
-          {/* <InputGroup>
-            <SearchInput value={value} onChange={setValue} onClear={() => setValue('')}/>
-          </InputGroup> */}
           <InputGroup>
-            {/* <TextInput 
-              id="searchBar" 
-              type="search" 
-              aria-label="Search for string" 
-              value={value} 
-              onChange={input => setValue(input)} 
-              ref={ref}
-              className="toolbar__searchbar"
-            /> */}
             <SearchInput 
               placeholder='Search'
-              value={value}
+              value={searchedInput}
               onNextClick={() => handleNextSearchItem()}
               onPreviousClick={() => handlePrevSearchItem()}
-              onChange={(input) => setValue(input)}
-              resultsCount={`${}`}
+              onClear={() => handleClear()}
+              onChange={(input) => setSearchedInput(input)}
+              resultsCount={`${currentSearchItemCount} / ${searchedWordIndexes.length}`}
               className="toolbar__searchbar"
             />
           </InputGroup>

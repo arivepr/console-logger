@@ -12,7 +12,6 @@ export interface LoggerToolbarProps extends React.HTMLProps<HTMLDivElement> {
   dataSourcesAmount: number;
   dataSourceTitles?: Array<string | null | undefined>;
   customToolbarActions?: () => React.ReactNode | React.ReactNode[];
-  // searchForKeyword: (keyword:string) => void;
   scrollToRow: (searchedRow: number) => void;
  };
 
@@ -20,10 +19,10 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
     scrollToRow,
     customToolbarActions,
     dataSourcesAmount,
-    // searchForKeyword,
 }) => {
     const [ userInput, setUserInput ]  = useState('');
     const [ foundWordIndex, setFoundWordIndex ] = useState<number | undefined>(-1);
+    const [currentSearchItemCount, setCurrentStepItemCount] = useState(1);
     const loggerState = useLoggerContext();
     const {
       searchedWordIndexes,
@@ -35,25 +34,30 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
       dataSourceTitles,
       setDataSourceTitles
     } = loggerState;
-    const value = userInput;
     const DEFAULT_FOCUS = -1;
     const DEFAULT_INDEX = 1;
 
     /* Making sure there is no leftover focused/highlighted rows */
-    useEffect(() => {
-      if (userInput.length === 0) {
-        handleClear();
-        return null;
-      }
+    // useEffect(() => {
+    //   if (userInput.length === 0) {
+    //     handleClear();
+    //     return null;
+    //   }
 
-      setSearchedInput(userInput);
-    }, [ userInput ]);
+    //   console.log('TESTING USER INPUT EFFECT HOOK!!!!!');
+    //   setSearchedInput(userInput);
+    // }, [ userInput ]);
 
     /* Defaulting the first focused row that contain searched keywords */
     useEffect(() => {
       if( searchedWordIndexes.length >= 1 ){
         setFoundWordIndex(DEFAULT_INDEX);
       }
+
+      // if( searchedWordIndexes.length < 1 ) {
+      //   setSearchedWordIndexes([]);
+      //   setRowInFocus(DEFAULT_FOCUS);;
+      // }
     }, [ searchedWordIndexes ]);
 
     /* Defaulting the names of the dropdown items if the default toolbar */ 
@@ -70,7 +74,7 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
       }
     }, [dataSourcesAmount]);
 
-
+    /* Clearing out the search input */
     const handleClear = () => {
         setUserInput('');
         setSearchedInput('');
@@ -110,7 +114,6 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
         <Level className='logger__toolbar'>
             <LevelItem className='toolbar__searchbar-group'>
               <ToolbarInputGroup
-                // searchForKeyword={searchForKeyword}
                 scrollToRow={scrollToRow}
                 customToolbarActions={customToolbarActions} 
                 handleNextSearchItem={handleNextSearchItem} 

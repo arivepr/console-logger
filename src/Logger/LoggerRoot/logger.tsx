@@ -4,7 +4,7 @@ import LoggerRow from '../Logger Row/loggerRow';
 import LoggerToolbar from '../Toolbar/loggerToolbar';
 import { useLoggerContext } from './LoggerContext';
 import memoize from 'memoize-one';
-import { LOGGER_ROW_HEIGHT, LOGGER_HEIGHT, LOGGER_WIDTH } from '../utils/constants'; // Anyway to calculate this dynamically with jsx? Figure it out.
+import { LOGGER_ROW_HEIGHT, LOGGER_HEIGHT, LOGGER_WIDTH, DEFAULT_FOCUS } from '../utils/constants'; // Anyway to calculate this dynamically with jsx? Figure it out.
 import { isArrayOfString, searchForKeyword, searchForIndex } from '../utils/utils';
 import "@patternfly/react-core/dist/styles/base.css";
 import '../styles/base.scss';
@@ -46,6 +46,8 @@ interface LoggerProps extends React.Props<HTMLElement> {
   className?: string;
   /* Titles users can provide for their Data Sources */
   dataSourceTitles?: Array<string | null | undefined>; 
+  /* Link to be opened via router whenever a user wants to open the component on new tab */
+  externalOpenRouteLink?: string;
   /* This describes custom items devs can add to the integrated search/toolbar */
   customToolbarActions?: () => React.ReactNode | React.ReactNode[]; 
   /* Dev defined method for downloading the output data from logger */
@@ -106,13 +108,17 @@ const Logger: React.FC<LoggerProps> = memo(({
     useEffect(() => {
       let foundKeywordIndexes: Array<number | null | undefined> = [];
 
-      if(searchedInput !== '') {
+      if(searchedInput !== '' && searchedInput.length >= 3) {
         foundKeywordIndexes = searchForKeyword(searchedInput, parsedData);
         
         if(foundKeywordIndexes.length !== 0){
           setSearchedWordIndexes(foundKeywordIndexes);
           scrollToRow(foundKeywordIndexes[DEFAULT_SEARCH_INDEX]);
         }
+      }
+
+      if(searchedInput === "" ){
+        setRowInFocus(DEFAULT_FOCUS);
       }
     }, [searchedInput]);
 
@@ -134,17 +140,11 @@ const Logger: React.FC<LoggerProps> = memo(({
         return cleanString;
     };
 
-    // const setRowHeight = (index) => {
-    //     return index % 2 === 0
-    //         ? LOGGER_ROW_HEIGHT
-    //         : LOGGER_ROW_HEIGHT;
-    // };
-
     /* Precursor to enabling word-wrapping, leaving alone although it's practically useless atm. */
     const setRowHeight = (index) => {
       return index % 2 === 0
-          ? 60
-          : 60;
+          ? 60 // LOGGER_ROW_HEIGHT
+          : 60; // LOGGER_ROW_HEIGHT;
     };
 
     return (

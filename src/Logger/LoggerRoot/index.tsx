@@ -24,6 +24,8 @@ export interface LoggerProps extends React.Props<HTMLElement> {
   className?: string;
   /* Titles users can provide for their Data Sources */
   dataSourceTitles?: Array<string | null | undefined>; 
+  /* Link to be opened via router whenever a user wants to open the component on new tab */
+  externalOpenRouteLink?: string;
   /* This describes custom items devs can add to the integrated search/toolbar */
   customToolbarActions?: () => React.ReactNode | React.ReactNode[]; 
   /* Dev defined method for downloading the output data from logger */
