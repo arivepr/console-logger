@@ -7,6 +7,7 @@ export const useLoggerContext = () => {
 export interface LoggerContextInterface {
   searchedInput: string | null | undefined;
   rowInFocus: number | null | undefined;
+  foundWordIndex: number | null | undefined;
   searchedWordIndexes: Array<number | null | undefined>;
   highlightedRowIndexes: Array<number | null | undefined>;
   currentDataSource: number | null | undefined;
@@ -15,6 +16,7 @@ export interface LoggerContextInterface {
   setDataSourceTitles?: (dataTitles: Array<string | null>) => void;
   setRowInFocus?: (index: number) => void;
   setSearchedInput: (input: string) => void;
+  setFoundWordIndex?: (index: number) => void;
   setHighlightedRowIndexes: (indexes: Array<number>) => void;
   setSearchedWordIndexes: (indexes: Array<number>) => void;
 };
@@ -24,6 +26,7 @@ const LoggerContext = createContext<LoggerContextInterface | null>(null);
 export const LoggerContextProvider = ({ children }) => {
   const [ searchedInput, setSearchedInput ] = useState<string | null>('');
   const [ rowInFocus, setRowInFocus ] = useState<number | null>(null);
+  const [ foundWordIndex, setFoundWordIndex ] = useState<number | undefined | null>(-1);
   const [ searchedWordIndexes, setSearchedWordIndexes ] = useState<Array<number> | null>([])
   const [ highlightedRowIndexes, setHighlightedRowIndexes ] = useState<Array<number> | null>([]);
   const [ currentDataSource, setCurrentDataSource ] = useState<number | null | undefined>(0); 
@@ -35,6 +38,7 @@ export const LoggerContextProvider = ({ children }) => {
       searchedInput,
       rowInFocus,
       dataSourceTitles,
+      foundWordIndex,
       searchedWordIndexes,
       highlightedRowIndexes,
       currentDataSource,
@@ -42,6 +46,7 @@ export const LoggerContextProvider = ({ children }) => {
       setDataSourceTitles,  
       setRowInFocus,
       setSearchedInput,
+      setFoundWordIndex,
       setHighlightedRowIndexes,
       setSearchedWordIndexes,
     }}>

@@ -48,9 +48,13 @@ interface LoggerProps extends React.Props<HTMLElement> {
   dataSourceTitles?: Array<string | null | undefined>; 
   /* Link to be opened via router whenever a user wants to open the component on new tab */
   externalOpenRouteLink?: string;
+  /* User defined method for handling fullscreen action */
+  onHandleFullScreen?: () => void;
+  /* User defined function to pausing playing information flow into the component */
+  onHandlePlayPause?: () => void;
   /* This describes custom items devs can add to the integrated search/toolbar */
   customToolbarActions?: () => React.ReactNode | React.ReactNode[]; 
-  /* Dev defined method for downloading the output data from logger */
+  /* User defined method for downloading the output data from logger */
   onDownloading?: () => void;
 };
 
@@ -161,7 +165,7 @@ const Logger: React.FC<LoggerProps> = memo(({
                 rowHeight={ index => setRowHeight(index) }
                 height={ LOGGER_HEIGHT }
                 width={"100%"} // Figure out what exactly this translates to
-                itemSize={ () => 30}
+                itemSize={ () => 60}
                 itemCount={ `${ parsedData.length }` }
                 itemData={ dataToRender }
                 ref={ loggerRef }

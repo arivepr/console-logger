@@ -20,9 +20,7 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
     customToolbarActions,
     dataSourcesAmount,
 }) => {
-    const [ userInput, setUserInput ]  = useState('');
-    const [ foundWordIndex, setFoundWordIndex ] = useState<number | undefined>(-1);
-    const [currentSearchItemCount, setCurrentStepItemCount] = useState(1);
+    // const [currentSearchItemCount, setCurrentStepItemCount] = useState(1);
     const loggerState = useLoggerContext();
     const {
       searchedWordIndexes,
@@ -32,21 +30,12 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
       currentDataSource,
       setSearchedInput,
       dataSourceTitles,
-      setDataSourceTitles
+      setDataSourceTitles,
+      foundWordIndex,
+      setFoundWordIndex,
     } = loggerState;
     const DEFAULT_FOCUS = -1;
-    const DEFAULT_INDEX = 1;
-
-    /* Making sure there is no leftover focused/highlighted rows */
-    // useEffect(() => {
-    //   if (userInput.length === 0) {
-    //     handleClear();
-    //     return null;
-    //   }
-
-    //   console.log('TESTING USER INPUT EFFECT HOOK!!!!!');
-    //   setSearchedInput(userInput);
-    // }, [ userInput ]);
+    const DEFAULT_INDEX = 0;
 
     /* Defaulting the first focused row that contain searched keywords */
     useEffect(() => {
@@ -76,8 +65,8 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
 
     /* Clearing out the search input */
     const handleClear = () => {
-        setUserInput('');
         setSearchedInput('');
+        setFoundWordIndex(0);
         setSearchedWordIndexes([]);
         setRowInFocus(DEFAULT_FOCUS);
     };
@@ -86,8 +75,6 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
     const handleNextSearchItem = () => {
         let oldIndex = searchedWordIndexes.indexOf(rowInFocus);
         let temp = foundWordIndex;
-
-        console.log('Checking rowInFocus inside of handleNextSearch: ', rowInFocus);
 
         if (oldIndex >= searchedWordIndexes.length - 1) {
             return null;
