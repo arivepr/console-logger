@@ -70,6 +70,8 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
               className="toolbar__searchbar"
             />
           {/* </InputGroup> */}
+        </ToolbarItem>
+        <ToolbarItem>
           {/* <InputGroup className="toolbar__default-actions"> */}
             { includesPlay && (
               <Button variant="control" className="searchbar__btn">
