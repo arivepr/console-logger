@@ -2,7 +2,6 @@ import React from 'react';
 import Logger from './logger';
 import { LoggerContextProvider } from './LoggerContext';
 
-
 export interface LoggerProps extends React.Props<HTMLElement> {
   /* String that wil be processed into the logger for output */
   data: string | Array<string>;
@@ -26,14 +25,16 @@ export interface LoggerProps extends React.Props<HTMLElement> {
   dataSourceTitles?: Array<string | null | undefined>; 
   /* Link to be opened via router whenever a user wants to open the component on new tab */
   externalOpenRouteLink?: string;
+  /* User defined method for handling fullscreen action */
+  onHandleFullScreen?: () => void;
+  /* User defined function to pausing playing information flow into the component */
+  onHandlePlayPause?: () => void;
   /* This describes custom items devs can add to the integrated search/toolbar */
   customToolbarActions?: () => React.ReactNode | React.ReactNode[]; 
   /* Dev defined method for downloading the output data from logger */
   onDownloading?: () => void;
   /* Function users can send if they want their own logic for external opening */
   onOpenExternally?: () => void;
-  /* Function users can send if they want custom logic for fullscreen action */
-  onFullScreen?: () => void;
 };
 
 const LoggerIndex:React.FC<LoggerProps> = ({
@@ -49,7 +50,7 @@ const LoggerIndex:React.FC<LoggerProps> = ({
   customToolbarActions = () => {},
   onOpenExternally = () => {},
   onDownloading = () => {},
-  onFullScreen = () => {},  
+  onHandleFullScreen = () => {},  
 }) => {
   /* Of course, still need to get all of the props connected */
   return (

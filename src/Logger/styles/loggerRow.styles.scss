@@ -29,7 +29,9 @@
         }
     }
     &.cell__index-column {
-        justify-content: center;          
+        justify-content: center; 
+        // justify-content: flex-start;
+        margin-bottom: 30px;         
         color: var(--ins-c-logger--index-font-color);
         border-right: 1px solid var(--ins-c-logger--index-BorderColor);
         border-left: 1px solid var(--ins-c-logger--index-BorderColor);

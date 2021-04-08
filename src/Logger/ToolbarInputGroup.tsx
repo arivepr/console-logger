@@ -43,14 +43,12 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
     setSearchedInput,
     searchedWordIndexes
   } = loggerContext;
-  // const [value, setValue] = useState('');
   const [currentSearchItemCount, setCurrentStepItemCount] = useState(1); // need to have a function not to display these unless there are any found searches
-
-  // This way the user can use their own custom toolbar items if they want to? via props
+  
   const toolbarItems = () => {
     return(
       <>
-        <ToolbarItem spacer={{default: "spacerMd"}}>
+        <ToolbarItem>
             <ToolbarDropdown 
               currentDataSource={currentDataSource}
               setCurrentDataSource={setCurrentDataSource}
@@ -59,8 +57,8 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
               setDataSourceTitles={setDataSourceTitles}
             />
         </ToolbarItem>
-        <ToolbarItem spacer={{default: "spacerLg"}}>
-          <InputGroup>
+        <ToolbarItem>
+          {/* <InputGroup> */}
             <SearchInput 
               placeholder='Search'
               value={searchedInput}
@@ -71,8 +69,8 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
               resultsCount={`${currentSearchItemCount} / ${searchedWordIndexes.length}`}
               className="toolbar__searchbar"
             />
-          </InputGroup>
-          <InputGroup className="toolbar__default-actions">
+          {/* </InputGroup> */}
+          {/* <InputGroup className="toolbar__default-actions"> */}
             { includesPlay && (
               <Button variant="control" className="searchbar__btn">
                 <PlayIcon />
@@ -93,7 +91,7 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
                 <ExternalLinkAltIcon />
               </Button>
             )}
-          </InputGroup>
+          {/* </InputGroup> */}
         </ToolbarItem>
       </>
     );

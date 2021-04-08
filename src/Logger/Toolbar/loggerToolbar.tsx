@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useLoggerContext } from '../LoggerRoot/LoggerContext';
-import { 
-  Level, 
-  LevelItem, 
-} from '@patternfly/react-core';
+// import { 
+//   Level, 
+//   LevelItem, 
+// } from '@patternfly/react-core';
 import ToolbarInputGroup from '../ToolbarInputGroup';
 import { NUMBER_INDEX_DELTA } from '../utils/constants';
 import '../styles/loggerToolbar.styles.scss';

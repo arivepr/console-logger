@@ -6,7 +6,6 @@ import { useLoggerContext } from './LoggerContext';
 import memoize from 'memoize-one';
 import { LOGGER_ROW_HEIGHT, LOGGER_HEIGHT, LOGGER_WIDTH, DEFAULT_FOCUS } from '../utils/constants'; // Anyway to calculate this dynamically with jsx? Figure it out.
 import { isArrayOfString, searchForKeyword, searchForIndex } from '../utils/utils';
-import "@patternfly/react-core/dist/styles/base.css";
 import '../styles/base.scss';
 import '../styles/logger.styles.scss';
 
@@ -156,9 +155,9 @@ const Logger: React.FC<LoggerProps> = memo(({
         <div className='ins-c-logger'>
             <LoggerToolbar
                 scrollToRow={ scrollToRow }
-                // searchForKeyword={ searchForKeyword } // Figure out a way to decouple this from parent component
                 customToolbarActions={ customToolbarActions } // Need to encapsulate whatever come through with components customized for the logger (logger specific buttons/dropdown/kebabs)
-                dataSourcesAmount={dataSourcesAmount } // can keep moving this as a prop, immutable variable 
+                dataSourcesAmount={ dataSourcesAmount }
+                // includesPlay={ includesPlay }
             />
             <List
                 className='logger__grid'
