@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button, TextInput, SearchInput, Toolbar, ToolbarItem, ToolbarContent, InputGroup } from '@patternfly/react-core';
+import { Button, TextInput, SearchInput, Toolbar, ToolbarItem, ToolbarContent, ToolbarGroup} from '@patternfly/react-core';
 import { SearchIcon, DownloadIcon, ExpandIcon, ExternalLinkAltIcon, PlayIcon, ExportIcon } from '@patternfly/react-icons';
-import { LoggerToolbarProps } from './Toolbar/loggerToolbar';
+import { LoggerToolbarProps } from './loggerToolbar';
 import ToolbarDropdown from './toolbarDropdown';
-import { useLoggerContext } from './LoggerRoot/LoggerContext';
-import "./styles/loggerToolbar.styles.scss";
+import { useLoggerContext } from '../LoggerRoot/LoggerContext';
+import "../styles/loggerToolbar.styles.scss";
 
 interface ToolbarInputGroup extends LoggerToolbarProps {
   includesFullScreen?: boolean;
@@ -24,7 +24,7 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
   includesFullScreen = true,
   includesPlay = false,
   includesLaunchExternal = true,
-  includesDownload = false,
+  includesDownload = true,
   handleNextSearchItem,
   handlePrevSearchItem,
   customToolbarActions,
@@ -58,7 +58,7 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
             />
         </ToolbarItem>
         <ToolbarItem>
-          {/* <InputGroup> */}
+          <ToolbarGroup>
             <SearchInput 
               placeholder='Search'
               value={searchedInput}
@@ -69,43 +69,45 @@ const ToolbarInputGroup: React.FC<ToolbarInputGroup> = ({
               resultsCount={`${currentSearchItemCount} / ${searchedWordIndexes.length}`}
               className="toolbar__searchbar"
             />
-          {/* </InputGroup> */}
+          </ToolbarGroup>
         </ToolbarItem>
-        <ToolbarItem>
-          {/* <InputGroup className="toolbar__default-actions"> */}
+        <ToolbarGroup alignment={{default: 'alignRight'}}>
+          <ToolbarItem>
             { includesPlay && (
-              <Button variant="control" className="searchbar__btn">
+              <Button variant="plain" className="searchbar__btn">
                 <PlayIcon />
               </Button>
             )}
+          </ToolbarItem>
+          <ToolbarItem>
             { includesFullScreen && (
-              <Button variant="control" className="searchbar__btn">
+              <Button variant="plain" className="searchbar__btn">
                 <ExpandIcon />
               </Button>
             )}
+          </ToolbarItem>
+          <ToolbarItem>
             { includesDownload && (
-              <Button variant="control" className="searchbar__btn">
+              <Button variant="plain" className="searchbar__btn">
                 <DownloadIcon />
               </Button>
             )}
+          </ToolbarItem>
+          <ToolbarItem>
             { includesLaunchExternal && (
-              <Button variant="control" className="searchbar__btn">
+              <Button variant="plain" className="searchbar__btn">
                 <ExternalLinkAltIcon />
               </Button>
             )}
-          {/* </InputGroup> */}
-        </ToolbarItem>
+          </ToolbarItem>
+        </ToolbarGroup>
       </>
     );
   };
 
   return (
     <>
-      <Toolbar inset={{
-        default:'insetSm', 
-        md:'insetLg'
-      }}
-      >
+      <Toolbar>
         <ToolbarContent>
           {toolbarItems()}
         </ToolbarContent>        

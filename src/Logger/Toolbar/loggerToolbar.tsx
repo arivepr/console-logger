@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLoggerContext } from '../LoggerRoot/LoggerContext';
-// import { 
-//   Level, 
-//   LevelItem, 
-// } from '@patternfly/react-core';
-import ToolbarInputGroup from '../ToolbarInputGroup';
+import ToolbarInputGroup from './ToolbarInputGroup';
+import ToolbarDropdown from './toolbarDropdown';
 import { NUMBER_INDEX_DELTA } from '../utils/constants';
 import '../styles/loggerToolbar.styles.scss';
 
@@ -76,7 +73,7 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
         let oldIndex = searchedWordIndexes.indexOf(rowInFocus);
         let temp = foundWordIndex;
 
-        if (oldIndex >= searchedWordIndexes.length - 1) {
+        if (oldIndex >= searchedWordIndexes.length - NUMBER_INDEX_DELTA) {
             return null;
         }
    
@@ -98,18 +95,14 @@ const LoggerToolbar: React.FC<LoggerToolbarProps> = ({
     };
 
     return (
-        // <Level className='logger__toolbar'>
-        //     <LevelItem className='toolbar__searchbar-group'>
-              <ToolbarInputGroup
-                scrollToRow={scrollToRow}
-                customToolbarActions={customToolbarActions} 
-                handleNextSearchItem={handleNextSearchItem} 
-                handlePrevSearchItem={handlePrevSearchItem}
-                handleClear={handleClear} 
-                dataSourcesAmount={dataSourcesAmount}
-              /> 
-        //     </LevelItem>
-        // </Level>
+      <ToolbarInputGroup
+        scrollToRow={scrollToRow}
+        customToolbarActions={customToolbarActions} 
+        handleNextSearchItem={handleNextSearchItem} 
+        handlePrevSearchItem={handlePrevSearchItem}
+        handleClear={handleClear} 
+        dataSourcesAmount={dataSourcesAmount}
+      /> 
     );
 
 };

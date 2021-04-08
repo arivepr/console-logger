@@ -30,7 +30,6 @@ export const LoggerContextProvider = ({ children }) => {
   const [ searchedWordIndexes, setSearchedWordIndexes ] = useState<Array<number> | null>([])
   const [ highlightedRowIndexes, setHighlightedRowIndexes ] = useState<Array<number> | null>([]);
   const [ currentDataSource, setCurrentDataSource ] = useState<number | null | undefined>(0); 
-  /* Rather than initialize at default, i should init at an empty array and base everything around that opposed to how it is now */
   const [ dataSourceTitles, setDataSourceTitles ] = useState<Array<string | null | undefined>>(['Default']); 
 
   return (

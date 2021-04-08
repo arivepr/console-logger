@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Dropdown, DropdownToggle, DropdownItem, DropdownPosition } from '@patternfly/react-core';
-import { useLoggerContext } from './LoggerRoot/LoggerContext';
-import { NUMBER_INDEX_DELTA } from './utils/constants';
+import { useLoggerContext } from '../LoggerRoot/LoggerContext';
+import { NUMBER_INDEX_DELTA } from '../utils/constants';
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon';
 import classnames from 'classnames';
-import './styles/loggerToolbar.styles.scss';
+import '../styles/loggerToolbar.styles.scss';
 
 interface ToolbarDropdownInterface extends React.HTMLProps<HTMLDivElement> {
   dataSourcesAmount: number,
@@ -46,9 +46,9 @@ const ToolbarDropdown: React.FC<ToolbarDropdownInterface> = ({
 
   return (
     <>
-      <Dropdown onSelect={()=> onSelect()} id="toggle-id" style={{height: "40px"}}
+      <Dropdown onSelect={()=> onSelect()}
         toggle={
-          <DropdownToggle style={{height: "36px"}} onToggle={onToggle}>
+          <DropdownToggle onToggle={onToggle}>
             {dataSourceTitles[currentDataSource]}
           </DropdownToggle>
         }  

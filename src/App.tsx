@@ -22,7 +22,7 @@ function App() {
   return (
     <div className="root-div">
       &nbsp;
-      <LoggerIndex data={[bigData.data, longLine.data, data.data]} />
+      <LoggerIndex data={[data.data, bigData.data, longLine.data]} />
       &nbsp;
     </div>
 
